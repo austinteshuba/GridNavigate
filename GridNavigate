@@ -1,0 +1,47 @@
+/* Methods6.java
+ * Austin Teshuba
+ * This function takes in an 8x8 grid (coordinates entered from the top left from top to bottom, space separated), and finds the fastest path out. 
+ * This program assumes the fastest path will be under 1000s in duration. Movements down and to the right are the only movements allowed.
+ */
+
+import java.util.*;//import utilities
+public class Methods6 {
+	public static int bestTime = 1000;//global variable for the best time
+	public static String bestPlace = "";//global variable for the directions of the best route
+	public static void main(String[] args) {
+		Scanner kb = new Scanner(System.in);//create a scanner
+		int[]inGrid = new int[64];//make array for 8x8 grid
+		System.out.println("Please enter the coordinates starting with (0,0) ending with (7,7) *note, please read from left to right, then go to the next line");
+		for (int t = 0; t<64; t++) {
+			inGrid[t] = kb.nextInt();//populate array with the coordinates. Every 8 items is a new column. so 0-7, 8-15, etc
+		}
+		find(inGrid);//call the function
+	}
+	
+	public static void find(int[]grid) {
+		navigate(grid, 0, " ", 0);//call the recursive function with the starting values
+		System.out.printf(" %d\n%s", bestTime, bestPlace);//print out the time and best route
+		bestTime = 1000;//reset global variables
+		bestPlace = "";
+	}
+	public static void navigate(int[]grid, int time, String path, int index) {
+		if (index == 63) {//if you have reached the end
+			if (time<bestTime) {//if the time is better than the previous best time
+				bestTime = time; //set the global variables to this best time you achieved and the string that has the directions to get such time.
+				bestPlace = path;
+				//System.out.printf("%d, %s\n", bestTime, bestPlace);
+			}
+		} else if (time<1000 && index!=63) {
+			//don't allow going up or to the left, as this will not be the fastest route
+			if (index < 56) {//if you aren't on the bottom edge already, aren't at the end, and aren't on a path with a time above 1000 seconds
+				navigate(grid, time + grid[index+8], path + "D", index+8);//call the function with you going downwards, Add the appropriate time to the parameter
+			}
+			if (index%8!=7) {
+				navigate(grid, time + grid[index+1], path + "R", index+1);//if you aren't on the rightmost edge, add the appropriate time and call the function with a move to the right.
+			}
+			
+		}
+	}
+	
+
+}
